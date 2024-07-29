@@ -4,8 +4,8 @@ namespace ScoreBoardLibrary.Interfaces
 {
     public interface IScoreBoard
     {
-        void StartGame(string homeTeam, string awayTeam);
-        void FinishGame();
+        Guid StartGame(string homeTeam, string awayTeam);
+        void FinishGame(Guid gameId);
         void UpdateGame();
         void GetSummaryOfGames();
         List<Game> GetOnGoingGames();

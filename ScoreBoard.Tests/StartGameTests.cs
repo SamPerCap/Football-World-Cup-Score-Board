@@ -1,10 +1,11 @@
+using ScoreBoardLibrary.Interfaces;
 using ScoreBoardLibrary.Models;
 
 namespace ScoreBoardLibrary.Tests
 {
     public class StartGameTests
     {
-        private readonly ScoreBoard _scoreBoard;
+        private readonly IScoreBoard _scoreBoard;
 
         public StartGameTests()
         {
