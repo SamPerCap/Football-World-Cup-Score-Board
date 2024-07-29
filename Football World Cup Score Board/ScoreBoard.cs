@@ -16,27 +16,40 @@ namespace ScoreBoardLibrary
             _teamsPlaying = [];
         }
 
-        public void StartGame(string homeTeam, string awayTeam)
+        public Guid StartGame(string homeTeam, string awayTeam)
         {
             if (string.IsNullOrEmpty(homeTeam) || string.IsNullOrEmpty(awayTeam))
             {
-                throw new ArgumentException("Team names have not been provided");
+                throw new ArgumentException($"Team names have not been provided: [{homeTeam}] vs [{awayTeam}]");
             }
 
             if (_teamsPlaying.Contains(homeTeam) || _teamsPlaying.Contains(awayTeam))
             {
-                throw new InvalidOperationException("One team is already playing a game");
+                var existingTeam = _teamsPlaying.Contains(homeTeam) ? homeTeam : awayTeam;
+                throw new InvalidOperationException($"The team ({existingTeam}) is already playing a game.");
             }
 
             var game = new Game(homeTeam, awayTeam);
             _onGoingGames.Add(game);
             _teamsPlaying.Add(homeTeam);
             _teamsPlaying.Add(awayTeam);
+
+            return game.Id;
         }
 
-        public void FinishGame()
+        public void FinishGame(Guid gameId)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var finishedGame = _onGoingGames.Single(game => game.Id == gameId);
+                finishedGame.IsFinished = true;
+                _onGoingGames.Remove(finishedGame);
+                _finishedGames.Add(finishedGame);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InvalidOperationException($"Game with Id {gameId} has not been found");
+            }
         }
 
         public void GetSummaryOfGames()
