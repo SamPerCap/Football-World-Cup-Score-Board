@@ -13,7 +13,8 @@
         public Player HomeTeam { get; set; }
         public Player AwayTeam { get; set; }
         public int TotalScore => HomeTeam.Score + AwayTeam.Score;
-
+        public bool IsFinished { get; set; } = false;
+        
         public Audit Audit { get; set; }
     }
 }
