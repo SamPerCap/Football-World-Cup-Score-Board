@@ -1,4 +1,6 @@
-﻿namespace ScoreBoardLibrary.Interfaces
+﻿using ScoreBoardLibrary.Models;
+
+namespace ScoreBoardLibrary.Interfaces
 {
     public interface IScoreBoard
     {
@@ -6,5 +8,7 @@
         void FinishGame();
         void UpdateGame();
         void GetSummaryOfGames();
+        List<Game> GetOnGoingGames();
+        List<Game> GetFinishedGames();
     }
 }
