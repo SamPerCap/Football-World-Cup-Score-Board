@@ -29,7 +29,7 @@ namespace ScoreBoardLibrary
                 throw new InvalidOperationException($"The team ({existingTeam}) is already playing a game.");
             }
 
-            Game game = new (homeTeam, awayTeam);
+            Game game = new(homeTeam, awayTeam);
             _ongoingGames.Add(game);
             _teamsPlaying.Add(homeTeam);
             _teamsPlaying.Add(awayTeam);
@@ -66,7 +66,10 @@ namespace ScoreBoardLibrary
 
         public List<Game> GetSummaryOfOngoingGames()
         {
-            return _ongoingGames;
+            return _ongoingGames
+                .OrderByDescending(game => game.TotalScore)
+                .ThenByDescending(game => game.Audit.Created)
+                .ToList();
         }
 
         public List<Game> GetSummaryOfFinishedGames()
