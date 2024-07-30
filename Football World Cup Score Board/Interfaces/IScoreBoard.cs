@@ -6,9 +6,10 @@ namespace ScoreBoardLibrary.Interfaces
     {
         Guid StartGame(string homeTeam, string awayTeam);
         void FinishGame(Guid gameId);
-        void UpdateGame();
+        void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore);
         void GetSummaryOfGames();
-        List<Game> GetOnGoingGames();
+        List<Game> GetAllOngoingGames();
         List<Game> GetFinishedGames();
+        Game GetOngoingGameById(Guid gameId);
     }
 }

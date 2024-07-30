@@ -5,13 +5,13 @@ namespace ScoreBoardLibrary
 {
     public class ScoreBoard : IScoreBoard
     {
-        private readonly List<Game> _onGoingGames;
+        private readonly List<Game> _ongoingGames;
         private readonly List<Game> _finishedGames;
         private readonly HashSet<string> _teamsPlaying;
 
         public ScoreBoard()
         {
-            _onGoingGames = [];
+            _ongoingGames = [];
             _finishedGames = [];
             _teamsPlaying = [];
         }
@@ -29,8 +29,8 @@ namespace ScoreBoardLibrary
                 throw new InvalidOperationException($"The team ({existingTeam}) is already playing a game.");
             }
 
-            var game = new Game(homeTeam, awayTeam);
-            _onGoingGames.Add(game);
+            Game game = new (homeTeam, awayTeam);
+            _ongoingGames.Add(game);
             _teamsPlaying.Add(homeTeam);
             _teamsPlaying.Add(awayTeam);
 
@@ -39,17 +39,10 @@ namespace ScoreBoardLibrary
 
         public void FinishGame(Guid gameId)
         {
-            try
-            {
-                var finishedGame = _onGoingGames.Single(game => game.Id == gameId);
-                finishedGame.IsFinished = true;
-                _onGoingGames.Remove(finishedGame);
-                _finishedGames.Add(finishedGame);
-            }
-            catch (InvalidOperationException)
-            {
-                throw new InvalidOperationException($"Game with Id {gameId} has not been found");
-            }
+            Game game = GetOngoingGameById(gameId);
+            game.IsFinished = true;
+            _ongoingGames.Remove(game);
+            _finishedGames.Add(game);
         }
 
         public void GetSummaryOfGames()
@@ -57,14 +50,28 @@ namespace ScoreBoardLibrary
             throw new NotImplementedException();
         }
 
-        public void UpdateGame()
+        public void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore)
         {
-            throw new NotImplementedException();
+            Game game = GetOngoingGameById(gameId);
+            game.HomeTeam.Score = homeTeamScore;
+            game.AwayTeam.Score = awayTeamScore;
         }
 
-        public List<Game> GetOnGoingGames()
+        public Game GetOngoingGameById(Guid gameId)
         {
-            return _onGoingGames;
+            try
+            {
+                return _ongoingGames.Single(game => game.Id == gameId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException($"Error obtaining game with Id: {gameId}.", ex);
+            }
+        }
+
+        public List<Game> GetAllOngoingGames()
+        {
+            return _ongoingGames;
         }
 
         public List<Game> GetFinishedGames()

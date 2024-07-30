@@ -35,7 +35,7 @@ namespace ScoreBoardLibrary.Tests
 
             // Assert
             Assert.Single(_scoreBoard.GetFinishedGames());
-            Assert.Single(_scoreBoard.GetOnGoingGames());
+            Assert.Single(_scoreBoard.GetAllOngoingGames());
         }
 
         [Fact]
