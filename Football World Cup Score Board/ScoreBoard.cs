@@ -64,6 +64,18 @@ namespace ScoreBoardLibrary
             }
         }
 
+        public Game GetFinishedGameById(Guid gameId)
+        {
+            try
+            {
+                return _finishedGames.Single(game => game.Id == gameId);
+            }
+            catch (InvalidOperationException ex)
+            {
+                throw new InvalidOperationException($"Error obtaining game with Id: {gameId}.", ex);
+            }
+        }
+
         public List<Game> GetSummaryOfOngoingGames()
         {
             return _ongoingGames
@@ -74,7 +86,10 @@ namespace ScoreBoardLibrary
 
         public List<Game> GetSummaryOfFinishedGames()
         {
-            return _finishedGames;
+            return _finishedGames
+               .OrderByDescending(game => game.TotalScore)
+               .ThenByDescending(game => game.Audit.Created)
+               .ToList();
         }
 
         public List<Game> GetSummaryOfAllHistoricGames()

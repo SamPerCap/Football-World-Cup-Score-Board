@@ -14,5 +14,6 @@ namespace ScoreBoardLibrary.Interfaces
         List<Game> GetSummaryOfGamesByDate();
 
         Game GetOngoingGameById(Guid gameId);
+        Game GetFinishedGameById(Guid gameId);
     }
 }
