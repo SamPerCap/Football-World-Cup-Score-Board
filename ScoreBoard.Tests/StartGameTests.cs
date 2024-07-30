@@ -28,7 +28,7 @@ namespace ScoreBoardLibrary.Tests
         {
             // Act
             _scoreBoard.StartGame(homeTeam, awayTeam);
-            List<Game> ongoingGames = _scoreBoard.GetAllOngoingGames();
+            List<Game> ongoingGames = _scoreBoard.GetSummaryOfOngoingGames();
             Game game = ongoingGames[0];
 
             // Assert
@@ -48,7 +48,7 @@ namespace ScoreBoardLibrary.Tests
 
             // Assert
             Assert.Throws<InvalidOperationException>(() => _scoreBoard.StartGame(homeTeam, awayTeam));
-            Assert.Single(_scoreBoard.GetAllOngoingGames());
+            Assert.Single(_scoreBoard.GetSummaryOfOngoingGames());
         }
     }
 }

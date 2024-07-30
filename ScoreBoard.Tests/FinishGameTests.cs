@@ -34,8 +34,8 @@ namespace ScoreBoardLibrary.Tests
             _scoreBoard.FinishGame(id);
 
             // Assert
-            Assert.Single(_scoreBoard.GetFinishedGames());
-            Assert.Single(_scoreBoard.GetAllOngoingGames());
+            Assert.Single(_scoreBoard.GetSummaryOfFinishedGames());
+            Assert.Single(_scoreBoard.GetSummaryOfOngoingGames());
         }
 
         [Fact]
@@ -48,7 +48,7 @@ namespace ScoreBoardLibrary.Tests
 
             // Act
             _scoreBoard.FinishGame(id);
-            var finishedGame = _scoreBoard.GetFinishedGames().Single(game => game.Id == id);
+            var finishedGame = _scoreBoard.GetSummaryOfFinishedGames().Single(game => game.Id == id);
 
             // Assert
             Assert.True(finishedGame.IsFinished);

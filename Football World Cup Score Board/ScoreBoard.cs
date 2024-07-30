@@ -45,11 +45,6 @@ namespace ScoreBoardLibrary
             _finishedGames.Add(game);
         }
 
-        public void GetSummaryOfGames()
-        {
-            throw new NotImplementedException();
-        }
-
         public void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore)
         {
             Game game = GetOngoingGameById(gameId);
@@ -69,14 +64,24 @@ namespace ScoreBoardLibrary
             }
         }
 
-        public List<Game> GetAllOngoingGames()
+        public List<Game> GetSummaryOfOngoingGames()
         {
             return _ongoingGames;
         }
 
-        public List<Game> GetFinishedGames()
+        public List<Game> GetSummaryOfFinishedGames()
         {
             return _finishedGames;
+        }
+
+        public List<Game> GetSummaryOfAllHistoricGames()
+        {
+            return _ongoingGames.Union(_finishedGames).ToList();
+        }
+
+        public List<Game> GetSummaryOfGamesByDate()
+        {
+            throw new NotImplementedException();
         }
     }
 }
