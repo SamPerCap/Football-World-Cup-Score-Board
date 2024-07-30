@@ -2,6 +2,6 @@
 {
     public class Audit
     {
-        public DateTimeOffset Created { get; set; } = DateTimeOffset.Now;
+        public DateTimeOffset Created { get; set; }
     }
 }
