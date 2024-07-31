@@ -23,7 +23,6 @@ namespace ScoreBoardLibrary.Tests
             _scoreBoard = new ScoreBoard(
                 _ongoingGameManager,
                 _finishedGameManger,
-                _gameRepository,
                 _gameManager
             );
         }

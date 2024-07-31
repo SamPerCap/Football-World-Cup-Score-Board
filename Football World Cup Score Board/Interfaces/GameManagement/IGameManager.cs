@@ -6,7 +6,7 @@ namespace ScoreBoardLibrary.Interfaces.GameManagement
     {
         Guid StartGame(string homeTeam, string awayTeam);
         void FinishGame(Guid gameId);
-        void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore);
+        void UpdateGameScore(Guid gameId, int homeTeamScore, int awayTeamScore);
 
         List<Game> GetSummaryOfAllHistoricGames();
         List<Game> GetSummaryOfGamesByDate(DateTimeOffset startDate, DateTimeOffset endDate);

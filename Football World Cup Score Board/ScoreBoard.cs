@@ -8,19 +8,16 @@ namespace ScoreBoardLibrary
     {
         private readonly IOngoingGameManager _ongoingGameManager;
         private readonly IFinishedGameManager _finishedGameManager;
-        private readonly IGameRepository _gameRepository;
         private readonly IGameManager _gameManager;
 
         public ScoreBoard(
             IOngoingGameManager ongoingGameManager,
             IFinishedGameManager finishedGameManager,
-            IGameRepository gameRepository,
             IGameManager gameManager
             )
         {
             _ongoingGameManager = ongoingGameManager;
             _finishedGameManager = finishedGameManager;
-            _gameRepository = gameRepository;
             _gameManager = gameManager;
         }
 
@@ -36,7 +33,7 @@ namespace ScoreBoardLibrary
 
         public void UpdateGameScore(Guid gameId, int homeTeamScore, int awayTeamScore)
         {
-            _gameManager.UpdateGame(gameId, homeTeamScore, awayTeamScore);
+            _gameManager.UpdateGameScore(gameId, homeTeamScore, awayTeamScore);
         }
 
         public List<Game> GetSummaryOfOngoingGames()

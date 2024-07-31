@@ -53,7 +53,7 @@ namespace ScoreBoardLibrary
             _teamManager.RemoveTeam(game.AwayTeam.Name);
         }
 
-        public void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore)
+        public void UpdateGameScore(Guid gameId, int homeTeamScore, int awayTeamScore)
         {
             Game game = _ongoingGameManager.GetGameById(gameId);
             
@@ -75,12 +75,7 @@ namespace ScoreBoardLibrary
                 throw new ArgumentException("End date cannot be earlier than start date.");
             }
 
-            return _ongoingGameManager.GetAllGames()
-                .Concat(_finishedGameManager.GetAllGames())
-                .Where(game => game.Audit.Created >= startDate && game.Audit.Created <= endDate)
-                .OrderByDescending(game => game.TotalScore)
-                .ThenByDescending(game => game.Audit.Created)
-                .ToList();
+            return _gameRepository.GetGamesByDate(startDate, endDate);
         }
     }
 }
