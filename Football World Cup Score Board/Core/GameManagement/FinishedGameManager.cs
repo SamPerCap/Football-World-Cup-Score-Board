@@ -15,10 +15,9 @@ namespace ScoreBoardLibrary
 
         public List<Game> GetAllGames()
         {
-            return _gameRepository.GetAllGames()
+            return _gameRepository
+                .GetAllGames()
                 .Where(game => game.IsFinished)
-                .OrderByDescending(game => game.TotalScore)
-                .ThenByDescending(game => game.Audit.Created)
                 .ToList();
         }
 
