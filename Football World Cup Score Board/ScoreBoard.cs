@@ -11,9 +11,9 @@ namespace ScoreBoardLibrary
 
         public ScoreBoard()
         {
-            _ongoingGames = [];
-            _finishedGames = [];
-            _teamsPlaying = [];
+            _ongoingGames = new List<Game>();
+            _finishedGames = new List<Game>();
+            _teamsPlaying = new HashSet<string>();
         }
 
         public Guid StartGame(string homeTeam, string awayTeam)
