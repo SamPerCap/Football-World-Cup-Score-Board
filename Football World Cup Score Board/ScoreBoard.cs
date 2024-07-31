@@ -1,119 +1,62 @@
 ﻿using ScoreBoardLibrary.Interfaces;
+using ScoreBoardLibrary.Interfaces.GameManagement;
 using ScoreBoardLibrary.Models;
 
 namespace ScoreBoardLibrary
 {
     public class ScoreBoard : IScoreBoard
     {
-        private readonly List<Game> _ongoingGames;
-        private readonly List<Game> _finishedGames;
-        private readonly HashSet<string> _teamsPlaying;
+        private readonly IOngoingGameManager _ongoingGameManager;
+        private readonly IFinishedGameManager _finishedGameManager;
+        private readonly IGameRepository _gameRepository;
+        private readonly IGameManager _gameManager;
 
-        public ScoreBoard()
+        public ScoreBoard(
+            IOngoingGameManager ongoingGameManager,
+            IFinishedGameManager finishedGameManager,
+            IGameRepository gameRepository,
+            IGameManager gameManager
+            )
         {
-            _ongoingGames = new List<Game>();
-            _finishedGames = new List<Game>();
-            _teamsPlaying = new HashSet<string>();
+            _ongoingGameManager = ongoingGameManager;
+            _finishedGameManager = finishedGameManager;
+            _gameRepository = gameRepository;
+            _gameManager = gameManager;
         }
 
         public Guid StartGame(string homeTeam, string awayTeam)
         {
-            if (string.IsNullOrEmpty(homeTeam) || string.IsNullOrEmpty(awayTeam))
-            {
-                throw new ArgumentException($"Team names have not been provided: [{homeTeam}] vs [{awayTeam}]");
-            }
-
-            if (_teamsPlaying.Contains(homeTeam) || _teamsPlaying.Contains(awayTeam))
-            {
-                var existingTeam = _teamsPlaying.Contains(homeTeam) ? homeTeam : awayTeam;
-                throw new InvalidOperationException($"The team ({existingTeam}) is already playing a game.");
-            }
-
-            Game game = new(homeTeam, awayTeam);
-            _ongoingGames.Add(game);
-            _teamsPlaying.Add(homeTeam);
-            _teamsPlaying.Add(awayTeam);
-
-            return game.Id;
+            return _gameManager.StartGame(homeTeam, awayTeam);
         }
 
         public void FinishGame(Guid gameId)
         {
-            Game game = GetOngoingGameById(gameId);
-            game.IsFinished = true;
-            _ongoingGames.Remove(game);
-            _finishedGames.Add(game);
+            _gameManager.FinishGame(gameId);
         }
 
-        public void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore)
+        public void UpdateGameScore(Guid gameId, int homeTeamScore, int awayTeamScore)
         {
-            Game game = GetOngoingGameById(gameId);
-            game.HomeTeam.Score = homeTeamScore;
-            game.AwayTeam.Score = awayTeamScore;
-        }
-
-        public Game GetOngoingGameById(Guid gameId)
-        {
-            try
-            {
-                return _ongoingGames.Single(game => game.Id == gameId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException($"Error obtaining game with Id: {gameId}.", ex);
-            }
-        }
-
-        public Game GetFinishedGameById(Guid gameId)
-        {
-            try
-            {
-                return _finishedGames.Single(game => game.Id == gameId);
-            }
-            catch (InvalidOperationException ex)
-            {
-                throw new InvalidOperationException($"Error obtaining game with Id: {gameId}.", ex);
-            }
+            _gameManager.UpdateGame(gameId, homeTeamScore, awayTeamScore);
         }
 
         public List<Game> GetSummaryOfOngoingGames()
         {
-            return _ongoingGames
-                .OrderByDescending(game => game.TotalScore)
-                .ThenByDescending(game => game.Audit.Created)
-                .ToList();
+            return _ongoingGameManager.GetAllGames();
         }
 
         public List<Game> GetSummaryOfFinishedGames()
         {
-            return _finishedGames
-               .OrderByDescending(game => game.TotalScore)
-               .ThenByDescending(game => game.Audit.Created)
-               .ToList();
+            return _finishedGameManager.GetAllGames();
         }
 
         public List<Game> GetSummaryOfAllHistoricGames()
         {
-            return _ongoingGames
-                .Concat(_finishedGames)
-                .OrderByDescending(game => game.TotalScore)
-                .ThenByDescending(game => game.Audit.Created)
-                .ToList();
+            return _gameManager.GetSummaryOfAllHistoricGames();
         }
 
         public List<Game> GetSummaryOfGamesByDate(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            if (startDate > endDate)
-            {
-                throw new ArgumentException("End date cannot be earlier than start date.");
-            }
-
-            return _ongoingGames
-                .Concat(_finishedGames)
-                .Where(game => game.Audit.Created >= startDate && game.Audit.Created <= endDate)
-                .OrderByDescending(game => game.TotalScore)
-                .ThenByDescending(game => game.Audit.Created)
-                .ToList();
+            return _gameManager.GetSummaryOfGamesByDate(startDate, endDate);
         }
     }
 }

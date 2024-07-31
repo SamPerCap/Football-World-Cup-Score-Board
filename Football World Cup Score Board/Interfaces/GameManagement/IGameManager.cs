@@ -1,21 +1,15 @@
 ﻿using ScoreBoardLibrary.Models;
 
-namespace ScoreBoardLibrary.Interfaces
+namespace ScoreBoardLibrary.Interfaces.GameManagement
 {
-    public interface IScoreBoard
+    public interface IGameManager
     {
         Guid StartGame(string homeTeam, string awayTeam);
-
         void FinishGame(Guid gameId);
-
-        void UpdateGameScore(Guid gameId, int homeTeamScore, int awayTeamScore);
-
-        List<Game> GetSummaryOfOngoingGames();
-
-        List<Game> GetSummaryOfFinishedGames();
+        void UpdateGame(Guid gameId, int homeTeamScore, int awayTeamScore);
 
         List<Game> GetSummaryOfAllHistoricGames();
-
         List<Game> GetSummaryOfGamesByDate(DateTimeOffset startDate, DateTimeOffset endDate);
     }
+
 }

@@ -1,4 +1,5 @@
 using ScoreBoardLibrary.Interfaces;
+using ScoreBoardLibrary.Interfaces.GameManagement;
 using ScoreBoardLibrary.Models;
 
 namespace ScoreBoardLibrary.Tests
@@ -6,10 +7,26 @@ namespace ScoreBoardLibrary.Tests
     public class StartGameTests
     {
         private readonly IScoreBoard _scoreBoard;
+        private readonly ITeamManager _teamManager;
+        private readonly IGameRepository _gameRepository;
+        private readonly IOngoingGameManager _ongoingGameManager;
+        private readonly IFinishedGameManager _finishedGameManger;
+        private readonly IGameManager _gameManager;
 
         public StartGameTests()
         {
-            _scoreBoard = new ScoreBoard();
+            _teamManager = new TeamManager();
+            _gameRepository = new GameRepository();
+            _ongoingGameManager = new OngoingGameManager(_gameRepository);
+            _finishedGameManger = new FinishedGameManager(_gameRepository);
+            _gameManager = new GameManager(_gameRepository, _teamManager, _ongoingGameManager, _finishedGameManger);
+
+            _scoreBoard = new ScoreBoard(
+                _ongoingGameManager,
+                _finishedGameManger,
+                _gameRepository,
+                _gameManager
+            );
         }
 
         [Theory]

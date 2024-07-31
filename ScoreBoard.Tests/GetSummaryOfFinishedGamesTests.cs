@@ -1,14 +1,31 @@
 ﻿using ScoreBoardLibrary.Interfaces;
+using ScoreBoardLibrary.Interfaces.GameManagement;
 
 namespace ScoreBoardLibrary.Tests
 {
     public class GetSummaryOfFinishedGamesTests
     {
         private readonly IScoreBoard _scoreBoard;
+        private readonly ITeamManager _teamManager;
+        private readonly IGameRepository _gameRepository;
+        private readonly IOngoingGameManager _ongoingGameManager;
+        private readonly IFinishedGameManager _finishedGameManger;
+        private readonly IGameManager _gameManager;
 
         public GetSummaryOfFinishedGamesTests()
         {
-            _scoreBoard = new ScoreBoard();
+            _teamManager = new TeamManager();
+            _gameRepository = new GameRepository();
+            _ongoingGameManager = new OngoingGameManager(_gameRepository);
+            _finishedGameManger = new FinishedGameManager(_gameRepository);
+            _gameManager = new GameManager(_gameRepository, _teamManager, _ongoingGameManager, _finishedGameManger);
+
+            _scoreBoard = new ScoreBoard(
+                _ongoingGameManager,
+                _finishedGameManger,
+                _gameRepository,
+                _gameManager
+            );
         }
 
         [Fact]
@@ -39,24 +56,24 @@ namespace ScoreBoardLibrary.Tests
         {
             // Arrange
             var firstGameId = _scoreBoard.StartGame("Team A", "Team B");
-            _scoreBoard.UpdateGame(firstGameId, 1, 0);
+            _scoreBoard.UpdateGameScore(firstGameId, 1, 0);
             _scoreBoard.FinishGame(firstGameId);
 
             var secondGameId = _scoreBoard.StartGame("Team C", "Team D");
-            _scoreBoard.UpdateGame(secondGameId, 2, 2);
+            _scoreBoard.UpdateGameScore(secondGameId, 2, 2);
             _scoreBoard.FinishGame(secondGameId);
 
             var thirdGameId = _scoreBoard.StartGame("Team E", "Team F");
-            _scoreBoard.UpdateGame(thirdGameId, 0, 2);
+            _scoreBoard.UpdateGameScore(thirdGameId, 0, 2);
             _scoreBoard.FinishGame(thirdGameId);
 
             // Act
             var summary = _scoreBoard.GetSummaryOfFinishedGames();
 
             // Assert
-            Assert.Equal(summary[0], _scoreBoard.GetFinishedGameById(secondGameId));
-            Assert.Equal(summary[1], _scoreBoard.GetFinishedGameById(thirdGameId));
-            Assert.Equal(summary[2], _scoreBoard.GetFinishedGameById(firstGameId));
+            Assert.Equal(summary[0], _finishedGameManger.GetGameById(secondGameId));
+            Assert.Equal(summary[1], _finishedGameManger.GetGameById(thirdGameId));
+            Assert.Equal(summary[2], _finishedGameManger.GetGameById(firstGameId));
         }
 
         [Fact]
@@ -64,15 +81,15 @@ namespace ScoreBoardLibrary.Tests
         {
             // Arrange
             var firstGameId = _scoreBoard.StartGame("Team A", "Team B");
-            _scoreBoard.UpdateGame(firstGameId, 1, 3);
+            _scoreBoard.UpdateGameScore(firstGameId, 1, 3);
             _scoreBoard.FinishGame(firstGameId);
 
             var secondGameId = _scoreBoard.StartGame("Team C", "Team D");
-            _scoreBoard.UpdateGame(secondGameId, 2, 2);
+            _scoreBoard.UpdateGameScore(secondGameId, 2, 2);
             _scoreBoard.FinishGame(secondGameId);
 
             var thirdGameId = _scoreBoard.StartGame("Team E", "Team F");
-            _scoreBoard.UpdateGame(thirdGameId, 0, 2);
+            _scoreBoard.UpdateGameScore(thirdGameId, 0, 2);
             _scoreBoard.FinishGame(thirdGameId);
 
             // Act
@@ -97,7 +114,7 @@ namespace ScoreBoardLibrary.Tests
             var firstGameId = _scoreBoard.StartGame("Team A", "Team B");
             var secondGameId = _scoreBoard.StartGame("Team C", "Team D");
 
-            _scoreBoard.UpdateGame(firstGameId, 1, 0);
+            _scoreBoard.UpdateGameScore(firstGameId, 1, 0);
             
             // Assert
             Assert.Empty(_scoreBoard.GetSummaryOfFinishedGames());
