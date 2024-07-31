@@ -11,7 +11,7 @@ namespace ScoreBoardLibrary.Interfaces
         List<Game> GetSummaryOfOngoingGames();
         List<Game> GetSummaryOfFinishedGames();
         List<Game> GetSummaryOfAllHistoricGames();
-        List<Game> GetSummaryOfGamesByDate();
+        List<Game> GetSummaryOfGamesByDate(DateTimeOffset startDate, DateTimeOffset endDate);
 
         Game GetOngoingGameById(Guid gameId);
         Game GetFinishedGameById(Guid gameId);

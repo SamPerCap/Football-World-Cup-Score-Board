@@ -94,12 +94,26 @@ namespace ScoreBoardLibrary
 
         public List<Game> GetSummaryOfAllHistoricGames()
         {
-            return _ongoingGames.Union(_finishedGames).ToList();
+            return _ongoingGames
+                .Concat(_finishedGames)
+                .OrderByDescending(game => game.TotalScore)
+                .ThenByDescending(game => game.Audit.Created)
+                .ToList();
         }
 
-        public List<Game> GetSummaryOfGamesByDate()
+        public List<Game> GetSummaryOfGamesByDate(DateTimeOffset startDate, DateTimeOffset endDate)
         {
-            throw new NotImplementedException();
+            if (startDate > endDate)
+            {
+                throw new ArgumentException("End date cannot be earlier than start date.");
+            }
+
+            return _ongoingGames
+                .Concat(_finishedGames)
+                .Where(game => game.Audit.Created >= startDate && game.Audit.Created <= endDate)
+                .OrderByDescending(game => game.TotalScore)
+                .ThenByDescending(game => game.Audit.Created)
+                .ToList();
         }
     }
 }

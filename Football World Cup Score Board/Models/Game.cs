@@ -7,7 +7,7 @@
             Id = Guid.NewGuid();
             HomeTeam = new Player { Name = homeTeamName, Score = 0 };
             AwayTeam = new Player { Name = awayTeamName, Score = 0 };
-            Audit = new Audit { Created = DateTimeOffset.Now };
+            Audit = new Audit { Created = DateTimeOffset.UtcNow };
         }
 
         public Guid Id { get; set; }
